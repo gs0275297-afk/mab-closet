@@ -1,0 +1,54 @@
+---
+/** Cursor com rótulo. Aparece só com mouse, sobre elementos com [data-cursor]. */
+---
+
+<div class="cursor" data-cursor-el aria-hidden="true">
+  <span class="cursor__disc"><span class="label" data-cursor-text></span></span>
+</div>
+
+<style>
+  .cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 90;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .cursor__disc {
+    display: grid;
+    place-items: center;
+    width: 6.25rem;
+    height: 6.25rem;
+    margin: -3.125rem 0 0 -3.125rem;
+    border-radius: 50%;
+    background: var(--olive);
+    color: var(--paper);
+    transform: scale(0);
+    transition: transform 0.6s var(--ease);
+  }
+
+  .cursor__disc .label {
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .cursor.is-active .cursor__disc {
+    transform: scale(1);
+  }
+
+  .cursor.is-active .label {
+    opacity: 1;
+    transition-delay: 0.15s;
+  }
+
+  @media not ((hover: hover) and (pointer: fine)) {
+    .cursor {
+      display: none;
+    }
+  }
+</style>

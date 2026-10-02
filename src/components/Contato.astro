@@ -1,0 +1,126 @@
+---
+/**
+ * CONTATO — o fechamento. Uma frase, um gesto.
+ */
+import Arrow from './ui/Arrow.astro';
+import { site, whatsapp } from '../data/site';
+---
+
+<section class="contato on-dark" id="contato">
+  <div class="wrap">
+    <p class="contato__label label" data-reveal="fade">Atendimento</p>
+
+    <h2 class="contato__title display" data-reveal="lines">
+      <span class="line"><span>O próximo look</span></span>
+      <span class="line"><span>começa com</span></span>
+      <span class="line"><span><em>um oi.</em></span></span>
+    </h2>
+
+    <div class="contato__actions" data-reveal="fade" style="--d:.35s">
+      <a class="btn btn--light contato__btn" href={whatsapp()} target="_blank" rel="noopener" data-magnetic>
+        Falar pelo WhatsApp
+      </a>
+
+      <ul class="contato__links">
+        <li>
+          <a class="label link link--on" href={site.instagram.url} target="_blank" rel="noopener">
+            Instagram <span aria-hidden="true">—</span>
+            {site.instagram.handle}
+            <Arrow />
+          </a>
+        </li>
+        <li>
+          <a class="label link" href={`tel:${site.phone.e164}`}>{site.phone.display}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contato {
+    padding-block: var(--section) calc(var(--section) * 0.8);
+    /* o único grande plano de cor do site: o oliva da marca */
+    background: var(--olive);
+    color: var(--paper);
+  }
+
+  .contato__label {
+    margin-bottom: clamp(2rem, 4vw, 4rem);
+  }
+
+  .contato__title {
+    font-size: clamp(3.3rem, 14.2vw, 18.5rem);
+    line-height: 0.84;
+    letter-spacing: -0.035em;
+  }
+
+  .contato__title .line:nth-child(2) {
+    margin-left: 1.1em;
+  }
+
+  .contato__title .line:nth-child(3) {
+    margin-left: 3em;
+  }
+
+  .contato__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2.5rem 4rem;
+    margin-top: clamp(3.5rem, 7vw, 7.5rem);
+    padding-top: clamp(2rem, 3vw, 3rem);
+    border-top: 1px solid rgb(250 249 245 / 0.3);
+  }
+
+  .contato__btn {
+    min-height: 4.25rem;
+    padding-inline: clamp(2.25rem, 4vw, 4rem);
+    font-size: 0.72rem;
+    transition:
+      color 0.55s var(--ease),
+      border-color 0.55s var(--ease),
+      transform 0.9s var(--ease);
+  }
+
+  .contato__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 3rem;
+  }
+
+  .contato__links a {
+    padding-block: 0.9em;
+  }
+
+  @media (max-width: 39.999rem) {
+    .contato__title {
+      font-size: clamp(3rem, 15.4vw, 5.75rem);
+      font-weight: 400;
+      line-height: 0.9;
+    }
+
+    .contato__title em {
+      font-weight: 400;
+    }
+
+    .contato__title .line:nth-child(2) {
+      margin-left: 0.8em;
+    }
+
+    .contato__title .line:nth-child(3) {
+      margin-left: 1.9em;
+    }
+
+    .contato__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .contato__links {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+  }
+</style>

@@ -1,0 +1,239 @@
+---
+/**
+ * LOCALIZAÇÃO — o endereço como peça tipográfica.
+ * Sem mapa embutido: o número da rua vira elemento gráfico e um botão
+ * abre o mapa no aplicativo de preferência da visitante.
+ */
+import SectionLabel from './ui/SectionLabel.astro';
+import Arrow from './ui/Arrow.astro';
+import Logo from './ui/Logo.astro';
+import { site, formatHour as clock } from '../data/site';
+
+const { address, hours } = site;
+const number = address.street.match(/\d+\s*$/)?.[0].trim();
+const statusData = JSON.stringify(hours.map(({ days, open, close }) => ({ days, open, close })));
+---
+
+<section class="local" id="localizacao">
+  {
+    number && (
+      <p class="local__number display" aria-hidden="true">
+        <span data-plx="y" data-plx-amount="70">
+          {number}
+        </span>
+      </p>
+    )
+  }
+
+  <div class="wrap local__grid">
+    <SectionLabel class="local__label" as="h2" n="05" text="Localização" />
+
+    <div class="local__main">
+      <Logo class="local__logo" data-reveal="fade" />
+
+      <address class="local__address display" data-reveal="lines">
+        <span class="line"><span>{address.street}</span></span>
+        <span class="line"><span><em class="accent">{address.place}</em></span></span>
+        <span class="line"><span>{address.city} — {address.state}</span></span>
+      </address>
+    </div>
+
+    <div class="local__info" data-reveal="fade">
+      <div class="local__hours">
+        <h3 class="label">Horário de atendimento</h3>
+        <dl>
+          {
+            hours.map((slot) => (
+              <div>
+                <dt>{slot.label}</dt>
+                <dd>
+                  {clock(slot.open)} — {clock(slot.close)}
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="local__status label" data-open-status data-hours={statusData} data-time-zone={site.timeZone} hidden>
+        </p>
+      </div>
+
+      <a class="btn" href={site.mapsUrl} target="_blank" rel="noopener">
+        Abrir no mapa
+        <Arrow />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .local {
+    position: relative;
+    overflow: hidden;
+    overflow: clip;
+    padding-block: var(--section);
+    background: var(--paper);
+  }
+
+  /* O número da rua como elemento gráfico */
+  .local__number {
+    position: absolute;
+    right: -0.03em;
+    bottom: -0.1em;
+    font-size: clamp(15rem, 41vw, 56rem);
+    line-height: 0.7;
+    letter-spacing: -0.04em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgb(98 102 59 / 0.42);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .local__number > span {
+    display: block;
+  }
+
+  .local__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+    row-gap: clamp(3.5rem, 7vw, 7rem);
+  }
+
+  .local__grid > :global(.local__label) {
+    grid-column: 1 / span 2;
+    align-self: start;
+    margin-top: 0.4rem;
+  }
+
+  .local__main {
+    grid-column: 3 / -1;
+  }
+
+  .local__main :global(.local__logo) {
+    align-items: flex-start;
+    margin-bottom: clamp(2rem, 3.5vw, 3.5rem);
+    font-size: 2rem;
+  }
+
+  .local__address {
+    font-size: clamp(2.5rem, 7.2vw, 8.75rem);
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+  }
+
+  .local__address .line:nth-child(2) {
+    margin-left: 1.3em;
+  }
+
+  .local__info {
+    grid-column: 3 / span 5;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2.75rem;
+  }
+
+  .local__hours {
+    width: min(100%, 22rem);
+  }
+
+  .local__hours h3 {
+    margin-bottom: 1.25rem;
+    color: var(--stone);
+  }
+
+  .local__hours dl {
+    display: grid;
+    gap: 0.35rem;
+    min-width: min(100%, 21rem);
+  }
+
+  .local__hours dl > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 2.5rem;
+    padding-block: 0.7rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .local__hours dd {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .local__status {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    margin-top: 1.25rem;
+  }
+
+  .local__status[hidden] {
+    display: none;
+  }
+
+  .local__status::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    border: 1px solid var(--stone);
+  }
+
+  .local__status[data-state='open'] {
+    color: var(--olive);
+  }
+
+  .local__status[data-state='open']::before {
+    border-color: var(--olive);
+    background: var(--olive);
+    box-shadow: 0 0 0 0 rgb(98 102 59 / 0.45);
+    animation: status-pulse 2.6s var(--ease) infinite;
+  }
+
+  @keyframes status-pulse {
+    to {
+      box-shadow: 0 0 0 0.6rem rgb(98 102 59 / 0);
+    }
+  }
+
+  @media (max-width: 63.999rem) {
+    .local__grid > :global(.local__label) {
+      grid-column: 1 / -1;
+      margin: 0;
+    }
+
+    .local__main,
+    .local__info {
+      grid-column: 1 / -1;
+    }
+
+    .local__address {
+      font-size: clamp(2.3rem, 10.2vw, 6.25rem);
+      font-weight: 400;
+      line-height: 1.02;
+    }
+
+    .local__address em {
+      font-weight: 400;
+    }
+
+    .local__address .line:nth-child(2) {
+      margin-left: 0;
+    }
+
+    .local {
+      padding-bottom: calc(var(--section) * 0.6 + 44vw);
+    }
+
+    .local__number {
+      right: -0.06em;
+      bottom: -0.08em;
+      font-size: 66vw;
+    }
+
+    .local__hours {
+      width: 100%;
+    }
+  }
+</style>

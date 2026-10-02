@@ -1,0 +1,365 @@
+---
+import { site, whatsapp } from '../data/site';
+import Logo from './ui/Logo.astro';
+import Arrow from './ui/Arrow.astro';
+---
+
+<header class="header" data-header>
+  <div class="header__bar">
+    <a class="header__logo" href="#inicio" aria-label="MAB Closet — início">
+      <Logo />
+    </a>
+
+    <nav class="header__nav" aria-label="Navegação principal">
+      <ul>
+        {
+          site.nav.map((item) => (
+            <li>
+              <a class="label link" href={item.href} data-nav-link>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="header__end">
+      <a class="btn btn--small header__cta" href={whatsapp()} target="_blank" rel="noopener">Atendimento</a>
+
+      <button
+        class="header__toggle"
+        type="button"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="menu"
+        aria-label="Abrir menu"
+      >
+        <span class="label" data-menu-label>Menu</span>
+        <span class="header__toggle-icon" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="menu" id="menu" data-menu inert>
+  <nav class="menu__nav" aria-label="Menu">
+    <ul>
+      {
+        site.nav.map((item, index) => (
+          <li style={`--i:${index}`}>
+            <a href={item.href}>
+              <span class="menu__n numeral" aria-hidden="true">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span class="menu__mask">
+                <span class="menu__text display">{item.label}</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <div class="menu__foot">
+    <div class="menu__links">
+      <a class="label link link--on" href={whatsapp()} target="_blank" rel="noopener">WhatsApp<Arrow /></a>
+      <a class="label link link--on" href={site.instagram.url} target="_blank" rel="noopener">Instagram<Arrow /></a>
+    </div>
+    <p class="menu__info">
+      {site.address.street} · {site.address.place}<br />
+      {site.address.city} — {site.address.state}
+    </p>
+  </div>
+</div>
+
+<style>
+  /* ---------- Barra ---------- */
+
+  .header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    color: var(--ink);
+    transition:
+      transform 0.9s var(--ease),
+      color 0.5s var(--ease);
+    animation: header-in 1.4s var(--ease) calc(var(--intro) + 0.55s) backwards;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: rgb(243 240 232 / 0.9);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    backdrop-filter: blur(16px) saturate(1.2);
+    border-bottom: 1px solid var(--line);
+    opacity: 0;
+    transition: opacity 0.6s var(--ease);
+  }
+
+  .header__bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.6rem var(--gutter);
+    transition: padding 0.7s var(--ease);
+  }
+
+  .header__logo {
+    justify-self: start;
+    display: inline-flex;
+    transform-origin: left center;
+    transition: transform 0.7s var(--ease);
+  }
+
+  .header__nav ul {
+    display: flex;
+    gap: clamp(1.5rem, 2.6vw, 3rem);
+  }
+
+  .header__nav a {
+    padding-block: 0.6em;
+  }
+
+  .header__nav a::after {
+    background: var(--olive);
+    height: 1.5px;
+  }
+
+  .header__nav a.is-current::after {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+
+  .header__logo :global(.logo) {
+    font-size: 1.7rem;
+  }
+
+  .header__end {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+  }
+
+  .header__toggle {
+    display: none;
+    align-items: center;
+    gap: 0.9rem;
+    min-height: 2.75rem;
+    margin-right: -0.25rem;
+    padding-inline: 0.25rem;
+  }
+
+  .header__toggle-icon {
+    position: relative;
+    display: block;
+    width: 1.75rem;
+    height: 0.5rem;
+  }
+
+  .header__toggle-icon span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transition: transform 0.6s var(--ease-io);
+  }
+
+  .header__toggle-icon span:first-child {
+    top: 0;
+  }
+
+  .header__toggle-icon span:last-child {
+    bottom: 0;
+  }
+
+  /* Estados */
+
+  .header.is-scrolled::before {
+    opacity: 1;
+  }
+
+  .header.is-scrolled .header__bar {
+    padding-block: 0.85rem;
+  }
+
+  .header.is-scrolled .header__logo {
+    transform: scale(0.84);
+  }
+
+  .header.is-hidden {
+    transform: translate3d(0, -101%, 0);
+  }
+
+  :global(.menu-open) .header {
+    color: var(--bone);
+    transform: none;
+  }
+
+  :global(.menu-open) .header::before {
+    opacity: 0;
+  }
+
+  :global(.menu-open) .header__toggle-icon span:first-child {
+    transform: translateY(calc(0.25rem - 0.5px)) rotate(45deg);
+  }
+
+  :global(.menu-open) .header__toggle-icon span:last-child {
+    transform: translateY(calc(-0.25rem + 0.5px)) rotate(-45deg);
+  }
+
+  @keyframes header-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, -1.25rem, 0);
+    }
+  }
+
+  /* ---------- Menu em tela cheia (mobile e tablet) ---------- */
+
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2.5rem;
+    padding: calc(var(--header-h) + 2.5rem) var(--gutter) max(2rem, env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--olive-deep);
+    color: var(--bone);
+    clip-path: inset(0 0 100% 0);
+    visibility: hidden;
+    transition:
+      clip-path 0.95s var(--ease-io),
+      visibility 0s linear 0.95s;
+  }
+
+  :global(.menu-open) .menu {
+    clip-path: inset(0 0 0 0);
+    visibility: visible;
+    transition:
+      clip-path 0.95s var(--ease-io),
+      visibility 0s;
+  }
+
+  .menu__nav li {
+    border-bottom: 1px solid var(--line-light);
+  }
+
+  .menu__nav li:first-child {
+    border-top: 1px solid var(--line-light);
+  }
+
+  .menu__nav a {
+    display: flex;
+    align-items: baseline;
+    gap: 1.25rem;
+    padding-block: 0.7rem;
+  }
+
+  .menu__n {
+    width: 2rem;
+    opacity: 0.6;
+  }
+
+  .menu__mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.14em;
+  }
+
+  .menu__text {
+    display: block;
+    font-size: clamp(2.9rem, 13vw, 5.25rem);
+    line-height: 1.08;
+    transform: translate3d(0, 115%, 0);
+    transition: transform 0.6s var(--ease-io);
+  }
+
+  :global(.menu-open) .menu__text {
+    transform: none;
+    transition: transform 1.25s var(--ease) calc(0.28s + var(--i) * 0.075s);
+  }
+
+  .menu__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem 2.5rem;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  :global(.menu-open) .menu__foot {
+    opacity: 1;
+    transition: opacity 1.2s var(--ease) 0.75s;
+  }
+
+  .menu__links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .menu__links a {
+    padding-block: 0.9em;
+  }
+
+  .menu__info {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    opacity: 0.6;
+  }
+
+  @media (max-height: 44rem) {
+    .menu {
+      gap: 1.5rem;
+      padding-top: calc(var(--header-h) + 0.75rem);
+    }
+
+    .menu__nav a {
+      padding-block: 0.35rem;
+    }
+
+    .menu__text {
+      font-size: clamp(2.2rem, 10vw, 3.6rem);
+    }
+  }
+
+  /* ---------- Responsivo ---------- */
+
+  @media (max-width: 63.999rem) {
+    .header__bar {
+      grid-template-columns: 1fr auto;
+      padding-block: 1.15rem;
+    }
+
+    .header__logo :global(.logo) {
+      font-size: 1.5rem;
+    }
+
+    .header__nav,
+    .header__cta {
+      display: none;
+    }
+
+    .header__toggle {
+      display: inline-flex;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .menu {
+      display: none;
+    }
+  }
+</style>

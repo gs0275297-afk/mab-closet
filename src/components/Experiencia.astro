@@ -1,0 +1,207 @@
+---
+/**
+ * EXPERIÊNCIA — narrativa em quatro momentos, do olhar à conversa.
+ * A coluna da esquerda (título + fotografia) fica fixa enquanto os
+ * momentos passam à direita.
+ *
+ * TODO(MAB): quando houver fotos da loja (fachada, araras, provador),
+ * a imagem desta seção é o lugar ideal para elas.
+ */
+import Media from './ui/Media.astro';
+import SectionLabel from './ui/SectionLabel.astro';
+import Arrow from './ui/Arrow.astro';
+import { site, whatsapp } from '../data/site';
+import detalhe from '../assets/images/detalhe-cetim-cinto.jpg';
+
+const moments = [
+  {
+    tag: 'Curadoria',
+    title: 'O olhar',
+    text: 'Antes de chegar à arara, cada peça foi escolhida. Nada entra por acaso.',
+  },
+  {
+    tag: 'Atendimento',
+    title: 'O encontro',
+    text: 'Escuta, tempo e opinião sincera, para que cada escolha faça sentido.',
+  },
+  {
+    tag: 'Na loja',
+    title: 'O lugar',
+    text: `No ${site.address.place}, em ${site.address.city}: um endereço para ver de perto, tocar o tecido e decidir com calma.`,
+    link: { label: 'Como chegar', href: '#localizacao', external: false },
+  },
+  {
+    tag: 'WhatsApp',
+    title: 'A conversa',
+    text: 'Viu algo no Instagram? Uma mensagem basta para continuar de onde você estiver.',
+    link: { label: 'Chamar no WhatsApp', href: whatsapp(), external: true },
+  },
+];
+
+const numerals = ['I', 'II', 'III', 'IV'];
+---
+
+<section class="experiencia on-dark" id="experiencia">
+  <div class="wrap experiencia__grid">
+    <div class="experiencia__lead">
+      <SectionLabel n="03" text="Experiência" />
+
+      <h2 class="experiencia__title display" data-reveal="lines">
+        <span class="line"><span>A roupa é só</span></span>
+        <span class="line"><span><em>o começo.</em></span></span>
+      </h2>
+
+      <figure class="experiencia__figure">
+        <Media
+          src={detalhe}
+          alt="Detalhe de blusa de cetim amarelo-manteiga com cinto de tachas prateadas"
+          sizes="(min-width: 64rem) 26vw, 62vw"
+          ratio="4 / 5"
+          position="50% 62%"
+          reveal="down"
+        />
+      </figure>
+    </div>
+
+    <ol class="moments">
+      {
+        moments.map((moment, index) => (
+          <li class="moment" data-reveal="fade">
+            <span class="moment__numeral numeral" aria-hidden="true">
+              {numerals[index]}
+            </span>
+            <div class="moment__body">
+              <p class="moment__tag label">{moment.tag}</p>
+              <h3 class="moment__title display">{moment.title}</h3>
+              <p class="moment__text">{moment.text}</p>
+              {moment.link && (
+                <a
+                  class="label link link--on"
+                  href={moment.link.href}
+                  target={moment.link.external ? '_blank' : undefined}
+                  rel={moment.link.external ? 'noopener' : undefined}
+                >
+                  {moment.link.label}
+                  {moment.link.external && <Arrow />}
+                </a>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .experiencia {
+    padding-block: var(--section);
+    background: var(--ink);
+    color: var(--bone);
+  }
+
+  .experiencia__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+    align-items: start;
+  }
+
+  .experiencia__lead {
+    grid-column: 1 / span 5;
+    position: sticky;
+    top: clamp(5rem, 11vh, 7.5rem);
+  }
+
+  .experiencia__title {
+    margin-top: 2rem;
+    font-size: clamp(3rem, 6.3vw, 7.5rem);
+    line-height: 0.94;
+    letter-spacing: -0.028em;
+  }
+
+  .experiencia__title .line:nth-child(2) {
+    margin-left: 1em;
+  }
+
+  .experiencia__figure {
+    width: min(26vw, 44vh);
+    margin-top: clamp(2.5rem, 4.5vw, 4.5rem);
+  }
+
+  .experiencia__figure :global(.media__clip) {
+    background: var(--charcoal);
+  }
+
+  /* ---------- Momentos ---------- */
+
+  .moments {
+    grid-column: 7 / -1;
+    padding-top: clamp(0rem, 6vw, 7rem);
+  }
+
+  .moment {
+    display: grid;
+    grid-template-columns: clamp(3rem, 6vw, 6.5rem) minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: clamp(2.5rem, 4.6vw, 4.75rem);
+    border-top: 1px solid var(--line-light);
+  }
+
+  .moment:last-child {
+    border-bottom: 1px solid var(--line-light);
+  }
+
+  .moment__numeral {
+    padding-top: 0.15rem;
+    font-size: 1.4rem;
+    opacity: 0.65;
+  }
+
+  .moment__tag {
+    margin-bottom: 1.25rem;
+    opacity: 0.6;
+  }
+
+  .moment__title {
+    font-size: clamp(2.75rem, 5.6vw, 6.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+  }
+
+  .moment__text {
+    max-width: 36ch;
+    margin-top: 1.25rem;
+    color: rgb(243 240 232 / 0.74);
+  }
+
+  .moment .link {
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 63.999rem) {
+    .experiencia__lead {
+      grid-column: 1 / -1;
+      position: static;
+    }
+
+    .experiencia__title {
+      font-size: clamp(3.1rem, 13.5vw, 7rem);
+    }
+
+    .experiencia__figure {
+      width: 62%;
+      margin-left: auto;
+      margin-top: 3rem;
+    }
+
+    .moments {
+      grid-column: 1 / -1;
+      padding-top: clamp(4rem, 12vw, 7rem);
+    }
+
+    .moment__title {
+      font-size: clamp(2.8rem, 12vw, 5.75rem);
+    }
+  }
+</style>

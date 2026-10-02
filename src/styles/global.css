@@ -1,0 +1,606 @@
+/* ==========================================================================
+   MAB CLOSET — sistema de design
+   Tokens, base tipográfica, utilitários e o vocabulário de movimento.
+   Estilos específicos de cada seção vivem no próprio componente.
+   ========================================================================== */
+
+:root {
+  /* ---------- Cor ----------
+     O oliva é a assinatura: aparece em detalhes, botões, itálicos e em um
+     único grande plano de cor (o fechamento). O resto é neutro. */
+  --olive: #62663b;
+  --olive-deep: #45482b;
+  --ink: #202124; /* grafite */
+  --charcoal: #2b2c2e;
+  --bone: #f3f0e8; /* off-white — fundo base */
+  --paper: #faf9f5; /* branco quente */
+  --linen: #e9e6da; /* off-white um tom abaixo, para alternar seções claras */
+  --stone: #696964; /* texto secundário sobre fundos claros */
+  --line: rgb(32 33 36 / 0.14);
+  --line-light: rgb(243 240 232 / 0.22);
+
+  /* ---------- Tipografia ----------
+     Serif editorial para títulos e frases de impacto; sans limpa para
+     navegação, textos e informações. O itálico da serif faz o papel de
+     "voz de detalhe" (numerais, ênfases). */
+  --serif: 'Cormorant Garamond Variable', 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
+  --sans: 'DM Sans Variable', 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  /* ---------- Espaço ---------- */
+  --gutter: clamp(1.25rem, 4.2vw, 4.5rem);
+  --section: clamp(6.5rem, 15vw, 14rem);
+  --header-h: 5.75rem;
+
+  /* ---------- Movimento ---------- */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.76, 0, 0.24, 1);
+  --intro: 1.05s; /* duração da cortina de abertura */
+}
+
+/* ---------- Reset ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 4rem;
+}
+
+html:not(.reduce-motion) {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--bone);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+p,
+figure,
+ol,
+ul,
+dl,
+dd,
+address {
+  margin: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: inherit;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+address {
+  font-style: normal;
+}
+
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--olive);
+  color: var(--paper);
+}
+
+:focus-visible {
+  outline: 1.5px solid currentColor;
+  outline-offset: 5px;
+}
+
+html.menu-open {
+  overflow: hidden;
+}
+
+/* ---------- Utilitários ---------- */
+
+.wrap {
+  width: 100%;
+  max-width: 120rem;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 200;
+  padding: 0.85rem 1.25rem;
+  background: var(--olive);
+  color: var(--paper);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* ---------- Tipografia ---------- */
+
+/* Títulos e frases de impacto */
+.display {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-variant-numeric: lining-nums;
+  line-height: 0.98;
+  letter-spacing: -0.022em;
+}
+
+.display em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+/* Ênfase em oliva — o itálico como detalhe tipográfico da marca */
+.accent {
+  color: var(--olive);
+}
+
+/* Rótulos, navegação e pequenas informações */
+.label {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+/* Numerais e notas editoriais */
+.numeral {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  font-weight: 400;
+  font-variant-numeric: lining-nums;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+.body {
+  max-width: 34ch;
+  color: var(--stone);
+}
+
+/* ---------- Links ---------- */
+
+.link {
+  position: relative;
+  display: inline-block;
+  padding-block: 0.35em;
+  transition: color 0.5s var(--ease);
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0.1em 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.7s var(--ease);
+}
+
+.link:hover::after,
+.link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* Variante sublinhada em repouso: no hover o traço sai e volta. */
+.link--on::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+.link--on:hover::after,
+.link--on:focus-visible::after {
+  animation: underline-swap 0.95s var(--ease-io);
+}
+
+/* Em fundos claros, o hover assume o oliva */
+.link--olive:hover,
+.link--olive:focus-visible {
+  color: var(--olive);
+}
+
+@keyframes underline-swap {
+  0% {
+    transform: scaleX(1);
+    transform-origin: right center;
+  }
+  45% {
+    transform: scaleX(0);
+    transform-origin: right center;
+  }
+  46% {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+}
+
+.arrow {
+  display: inline-block;
+  width: 0.8em;
+  height: 0.8em;
+  margin-left: 0.75em;
+  vertical-align: -0.04em;
+  transition: transform 0.6s var(--ease);
+}
+
+a:hover > .arrow,
+a:focus-visible > .arrow {
+  transform: translate(0.18em, -0.18em);
+}
+
+/* ---------- Botão ----------
+   Retangular, de cantos vivos. O preenchimento sobe por baixo no hover.
+   .btn            oliva sólido (ação principal)
+   .btn--line      contorno fino (ação secundária em fundo claro)
+   .btn--light     claro (sobre fundos escuros ou oliva)
+   -------------------------------------------------------------------------- */
+
+.btn {
+  --btn-bg: var(--olive);
+  --btn-fg: var(--paper);
+  --btn-border: var(--olive);
+  --btn-fill: var(--olive-deep);
+  --btn-hover: var(--paper);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.5rem;
+  padding: 0 2.25rem;
+  overflow: hidden;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition:
+    color 0.55s var(--ease),
+    border-color 0.55s var(--ease);
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  background: var(--btn-fill);
+  transform: translateY(102%);
+  transition: transform 0.65s var(--ease);
+}
+
+.btn:hover,
+.btn:focus-visible {
+  color: var(--btn-hover);
+  border-color: var(--btn-fill);
+}
+
+.btn:hover::before,
+.btn:focus-visible::before {
+  transform: none;
+}
+
+.btn--line {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  --btn-border: rgb(32 33 36 / 0.4);
+  --btn-fill: var(--olive);
+}
+
+.btn--light {
+  --btn-bg: var(--bone);
+  --btn-fg: var(--ink);
+  --btn-border: var(--bone);
+  --btn-fill: var(--ink);
+  --btn-hover: var(--bone);
+}
+
+.btn--small {
+  min-height: 2.6rem;
+  padding: 0 1.5rem;
+  font-size: 0.625rem;
+}
+
+/* ---------- Etiqueta de seção: "01 —— A marca" ---------- */
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.section-label__n {
+  color: var(--olive);
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.section-label__rule {
+  display: block;
+  width: 2.25rem;
+  height: 1px;
+  background: var(--olive);
+}
+
+/* Sobre fundos escuros o oliva não tem contraste: a etiqueta fica clara */
+.on-dark .section-label__n {
+  color: inherit;
+  opacity: 0.7;
+}
+
+.on-dark .section-label__rule {
+  background: currentColor;
+  opacity: 0.4;
+}
+
+/* ---------- Moldura de imagem ----------
+   .media          moldura com proporção fixa (elemento observado)
+   .media__clip    máscara animada (clip-path)
+   .media__plx     camada de parallax — mais alta que a moldura
+   .media__zoom    escala lenta na entrada e no hover
+   -------------------------------------------------------------------------- */
+
+.media {
+  position: relative;
+  aspect-ratio: var(--ratio, 4 / 5);
+}
+
+.media__clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--linen);
+}
+
+.media__plx {
+  position: absolute;
+  inset: -7% 0;
+  will-change: transform;
+}
+
+.media__plx:not([data-plx]) {
+  inset: 0;
+}
+
+.media__zoom,
+.media picture,
+.media img {
+  width: 100%;
+  height: 100%;
+}
+
+.media img {
+  object-fit: cover;
+  object-position: var(--pos, 50% 50%);
+}
+
+.media__zoom {
+  transition: transform 1.8s var(--ease);
+}
+
+@media (hover: hover) {
+  .media--hover:hover .media__zoom,
+  a:hover .media__zoom,
+  a:focus-visible .media__zoom {
+    transform: scale(1.045);
+  }
+}
+
+/* ---------- Movimento: entradas ao rolar ----------
+   Só são aplicadas quando há JavaScript (html.js). Sem JS, tudo fica visível.
+   -------------------------------------------------------------------------- */
+
+.line {
+  display: block;
+  overflow: hidden;
+  /* espaço para ascendentes, descendentes e para o avanço do itálico */
+  padding: 0.1em 0.14em 0.24em 0.06em;
+  margin: -0.1em -0.14em -0.24em -0.06em;
+}
+
+.line > span {
+  display: block;
+}
+
+.js [data-reveal='lines'] .line > span {
+  transform: translateY(125%);
+  transition: transform 1.5s var(--ease);
+  transition-delay: calc(var(--d, 0s) + var(--i, 0) * 0.11s);
+}
+
+.js [data-reveal='lines'] .line:nth-child(2) > span {
+  --i: 1;
+}
+
+.js [data-reveal='lines'] .line:nth-child(3) > span {
+  --i: 2;
+}
+
+.js [data-reveal='lines'] .line:nth-child(4) > span {
+  --i: 3;
+}
+
+.js [data-reveal='lines'].is-in .line > span {
+  transform: none;
+}
+
+.js [data-reveal='fade'] {
+  opacity: 0;
+  transform: translateY(1.75rem);
+  transition:
+    opacity 1.3s var(--ease),
+    transform 1.5s var(--ease);
+  transition-delay: var(--d, 0s);
+}
+
+.js [data-reveal='fade'].is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.js [data-reveal^='clip'] .media__clip {
+  transition: clip-path 1.7s var(--ease-io);
+  transition-delay: var(--d, 0s);
+}
+
+.js [data-reveal^='clip'] .media__zoom {
+  transform: scale(1.28);
+  transition: transform 2.6s var(--ease);
+  transition-delay: var(--d, 0s);
+}
+
+.js [data-reveal='clip-up'] .media__clip {
+  clip-path: inset(100% 0 0 0);
+}
+
+.js [data-reveal='clip-down'] .media__clip {
+  clip-path: inset(0 0 100% 0);
+}
+
+.js [data-reveal='clip-left'] .media__clip {
+  clip-path: inset(0 100% 0 0);
+}
+
+.js [data-reveal='clip-right'] .media__clip {
+  clip-path: inset(0 0 0 100%);
+}
+
+.js [data-reveal='clip-center'] .media__clip {
+  clip-path: inset(22% 26% 22% 26%);
+}
+
+.js [data-reveal^='clip'].is-in .media__clip {
+  clip-path: inset(0 0 0 0);
+}
+
+.js [data-reveal^='clip'].is-in .media__zoom {
+  transform: none;
+}
+
+@media (hover: hover) {
+  .js .media--hover[data-reveal^='clip'].is-in:hover .media__zoom,
+  .js a:hover [data-reveal^='clip'].is-in .media__zoom,
+  .js a:focus-visible [data-reveal^='clip'].is-in .media__zoom {
+    transform: scale(1.045);
+    transition-duration: 1.8s;
+    transition-delay: 0s;
+  }
+}
+
+/* ---------- Menos movimento ----------
+   A classe .reduce-motion é definida no <head> a partir de
+   prefers-reduced-motion. Nesse modo nada desliza, escala ou faz parallax:
+   o conteúdo apenas surge em uma fusão curta.
+   -------------------------------------------------------------------------- */
+
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0s !important;
+}
+
+.reduce-motion [data-reveal] {
+  opacity: 0;
+  transform: none;
+  transition: opacity 0.9s ease !important;
+}
+
+.reduce-motion [data-reveal].is-in {
+  opacity: 1;
+}
+
+.reduce-motion [data-reveal='lines'] .line > span,
+.reduce-motion [data-reveal^='clip'] .media__zoom,
+.reduce-motion a:hover .media__zoom,
+.reduce-motion .media--hover:hover .media__zoom {
+  transform: none !important;
+}
+
+.reduce-motion [data-reveal^='clip'] .media__clip {
+  clip-path: none;
+}
+
+.reduce-motion .media__plx,
+.reduce-motion .media__plx[data-plx] {
+  inset: 0;
+  transform: none !important;
+}

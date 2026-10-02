@@ -1,0 +1,65 @@
+---
+/**
+ * Cortina de abertura: a assinatura aparece, a cortina sobe e revela o hero.
+ * É só CSS — não depende de JavaScript e some sozinha. No modo de
+ * menos movimento (.reduce-motion) ela nem é exibida.
+ */
+import Logo from './ui/Logo.astro';
+---
+
+<div class="intro" aria-hidden="true">
+  <div class="intro__mark">
+    <Logo />
+  </div>
+</div>
+
+<style>
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    /* oliva + grafite: a mesma relação de cores do logotipo */
+    background: var(--olive);
+    color: var(--ink);
+    pointer-events: none;
+    animation: intro-lift 1.15s var(--ease-io) var(--intro) both;
+  }
+
+  .intro__mark {
+    font-size: clamp(2.25rem, 4.4vw, 3.75rem);
+    animation:
+      intro-mark-in 0.9s var(--ease) 0.1s both,
+      intro-mark-out 0.7s var(--ease-io) calc(var(--intro) - 0.1s) forwards;
+  }
+
+  .intro__mark :global(.logo) {
+    font-size: inherit;
+  }
+
+  @keyframes intro-lift {
+    to {
+      transform: translate3d(0, -100%, 0);
+      visibility: hidden;
+    }
+  }
+
+  @keyframes intro-mark-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 0.6em, 0);
+    }
+  }
+
+  @keyframes intro-mark-out {
+    to {
+      opacity: 0;
+      transform: translate3d(0, -1.2em, 0);
+    }
+  }
+
+  :global(.reduce-motion) .intro {
+    display: none;
+  }
+</style>

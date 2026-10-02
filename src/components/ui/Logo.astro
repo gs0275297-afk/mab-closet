@@ -1,0 +1,59 @@
+---
+/**
+ * Assinatura tipográfica da MAB Closet — usada sempre que o nome da marca
+ * aparece como texto. Segue a lógica do logotipo: "MAB" em sans geométrica,
+ * compacta e com presença; "CLOSET" pequeno, em serif de caixa alta, com as
+ * letras distribuídas exatamente na largura de "MAB".
+ *
+ * Isto NÃO é o logotipo: o monograma fundido do logo original não foi
+ * redesenhado, para não distorcê-lo.
+ *
+ * TODO(MAB): quando o arquivo oficial do logo (SVG ou PNG em alta) estiver
+ * disponível, salve-o em src/assets/ e troque o conteúdo deste componente
+ * por ele — sem alterar proporções. O restante do site se adapta.
+ */
+interface Props {
+  class?: string;
+}
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<span class:list={['logo', className]} {...rest}>
+  <span class="logo__mab" aria-hidden="true">MAB</span>
+  <span class="logo__closet" aria-hidden="true"><i>C</i><i>L</i><i>O</i><i>S</i><i>E</i><i>T</i></span>
+  <span class="sr-only">MAB Closet</span>
+</span>
+
+<style is:global>
+  .logo {
+    display: inline-grid;
+    justify-items: stretch;
+    row-gap: 0.2em;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: inherit;
+  }
+
+  .logo__mab {
+    font-family: var(--sans);
+    font-weight: 500;
+    line-height: 0.82;
+    letter-spacing: -0.055em;
+    /* o espaçamento da última letra não conta na largura do bloco */
+    margin-right: -0.055em;
+  }
+
+  .logo__closet {
+    display: flex;
+    justify-content: space-between;
+    padding-inline: 0.2em 0.12em;
+    font-family: var(--serif);
+    font-size: 0.34em;
+    font-weight: 500;
+  }
+
+  .logo__closet i {
+    font-style: normal;
+  }
+</style>

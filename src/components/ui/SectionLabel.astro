@@ -1,0 +1,18 @@
+---
+/** Etiqueta editorial numerada: numeral em itálico oliva, fio e rótulo. */
+interface Props {
+  n?: string;
+  text: string;
+  /** Elemento HTML — use "h2" quando a etiqueta for o título da seção. */
+  as?: 'p' | 'h2';
+  class?: string;
+}
+
+const { n, text, as: Tag = 'p', class: className, ...rest } = Astro.props;
+---
+
+<Tag class:list={['label', 'section-label', className]} {...rest}>
+  {n && <span class="section-label__n numeral" aria-hidden="true">{n}</span>}
+  {n && <span class="section-label__rule" aria-hidden="true" />}
+  <span>{text}</span>
+</Tag>

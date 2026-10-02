@@ -1,0 +1,154 @@
+---
+import serif from '@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-normal.woff2?url';
+import serifItalic from '@fontsource-variable/cormorant-garamond/files/cormorant-garamond-latin-wght-italic.woff2?url';
+import sans from '@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url';
+import '../styles/global.css';
+import { site } from '../data/site';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Intro from '../components/Intro.astro';
+import Cursor from '../components/ui/Cursor.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = site.title, description = site.description } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL('/og-mab-closet.jpg', Astro.site).href;
+
+// Apenas o subconjunto latino (cobre o português) — três arquivos, pré-carregados.
+const latin =
+  'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD';
+const fontFaces = `
+@font-face{font-family:'Cormorant Garamond Variable';font-style:normal;font-display:swap;font-weight:300 700;src:url(${serif}) format('woff2');unicode-range:${latin}}
+@font-face{font-family:'Cormorant Garamond Variable';font-style:italic;font-display:swap;font-weight:300 700;src:url(${serifItalic}) format('woff2');unicode-range:${latin}}
+@font-face{font-family:'DM Sans Variable';font-style:normal;font-display:swap;font-weight:100 1000;src:url(${sans}) format('woff2');unicode-range:${latin}}
+`;
+
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'ClothingStore',
+  '@id': `${canonical}#loja`,
+  name: site.name,
+  description,
+  url: canonical,
+  image: ogImage,
+  telephone: site.phone.e164,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: `${site.address.street} — ${site.address.place}`,
+    addressLocality: site.address.city,
+    addressRegion: site.address.state,
+    addressCountry: site.address.country,
+  },
+  openingHoursSpecification: site.hours.map((slot) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: slot.days.map((day) => DAY_NAMES[day]),
+    opens: slot.open,
+    closes: slot.close,
+  })),
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: site.phone.e164,
+    contactType: 'customer service',
+    availableLanguage: 'Portuguese',
+  },
+  sameAs: [site.instagram.url],
+};
+---
+
+<!doctype html>
+<html lang={site.locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#f3f0e8" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- SEO local -->
+    <meta name="geo.region" content="BR-MS" />
+    <meta name="geo.placename" content="Três Lagoas" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="MAB Closet — top branco e calça de alfaiataria, vistos de frente e de costas" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap.xml" />
+
+    <link rel="preload" as="font" type="font/woff2" href={serif} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={serifItalic} crossorigin />
+    <link rel="preload" as="font" type="font/woff2" href={sans} crossorigin />
+    <style is:inline set:html={fontFaces}></style>
+
+    <!--
+      Antes do primeiro quadro:
+      · .js             → há JavaScript; sem ele, nada fica oculto à espera de animação.
+      · .reduce-motion  → o sistema pede menos movimento: o site troca parallax,
+                          máscaras e zoom por fusões suaves.
+      Para pré-visualizar as animações completas em uma máquina com os efeitos
+      do sistema desligados, abra a página com ?motion=full
+    -->
+    <script is:inline>
+      (function () {
+        var root = document.documentElement;
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (/[?&]motion=full\b/.test(location.search)) reduce = false;
+        root.classList.add('js');
+        if (reduce) root.classList.add('reduce-motion');
+      })();
+    </script>
+    <noscript>
+      <style>
+        @media (prefers-reduced-motion: reduce) {
+          *,
+          *::before,
+          *::after {
+            animation: none !important;
+          }
+          .intro {
+            display: none !important;
+          }
+        }
+      </style>
+    </noscript>
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  </head>
+
+  <body>
+    <a class="skip-link label" href="#conteudo">Pular para o conteúdo</a>
+    <Intro />
+    <Header />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Footer />
+    <Cursor />
+
+    <script>
+      import '../scripts/main.ts';
+    </script>
+  </body>
+</html>

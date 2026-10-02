@@ -1,0 +1,124 @@
+---
+/**
+ * EDITORIAL — um respiro de página dupla.
+ * Duas linhas deslizam em sentidos opostos com a rolagem: a primeira passa
+ * por trás da fotografia, a segunda avança à frente dela. A foto abre do centro.
+
+ * As posições das linhas são calculadas a partir da largura e da margem da
+ * foto (--fig-w / --fig-r), para que o encontro texto/imagem se mantenha em
+ * qualquer largura de tela.
+ */
+import Media from './ui/Media.astro';
+import cetim from '../assets/images/editorial-cetim.jpg';
+---
+
+<section class="editorial" aria-labelledby="editorial-titulo">
+  <h2 class="sr-only" id="editorial-titulo">O detalhe é o que fica.</h2>
+
+  <div class="editorial__stage">
+    <p class="editorial__line editorial__line--a display" aria-hidden="true">
+      <span data-plx="x" data-plx-amount="-4.5">O detalhe</span>
+    </p>
+
+    <figure class="editorial__figure">
+      <Media
+        src={cetim}
+        alt="Conjunto de cetim amarelo-manteiga com cinto de tachas e bolsa preta, em um quarto com papel de parede floral"
+        sizes="(min-width: 40rem) 34vw, 68vw"
+        ratio="3 / 4"
+        position="50% 40%"
+        reveal="center"
+        parallax={1.2}
+      />
+    </figure>
+
+    <p class="editorial__line editorial__line--b display" aria-hidden="true">
+      <span data-plx="x" data-plx-amount="2.5"><em>é o que fica.</em></span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .editorial {
+    overflow: hidden;
+    overflow: clip;
+    background: var(--linen);
+    padding-block: clamp(6rem, 13vw, 13rem);
+  }
+
+  .editorial__stage {
+    --fig-w: clamp(15rem, 34vw, 44rem);
+    --fig-r: 12vw;
+    position: relative;
+    display: grid;
+  }
+
+  .editorial__figure {
+    position: relative;
+    z-index: 2;
+    justify-self: end;
+    width: var(--fig-w);
+    margin-right: var(--fig-r);
+  }
+
+  .editorial__line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    line-height: 0.9;
+    letter-spacing: -0.035em;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .editorial__line > span {
+    display: block;
+    will-change: transform;
+  }
+
+  /* Atrás da fotografia: termina onde a foto começa e desliza para trás dela */
+  .editorial__line--a {
+    top: 12%;
+    z-index: 1;
+    padding-left: var(--gutter);
+    font-size: clamp(4rem, 14.4vw, 18.5rem);
+  }
+
+  /* À frente da fotografia: o fim da linha avança sobre a borda esquerda da
+     foto (área clara da imagem), sem cobrir o look */
+  .editorial__line--b {
+    bottom: 9%;
+    z-index: 3;
+    padding-right: calc(var(--fig-r) + var(--fig-w) - 5.5vw);
+    font-size: clamp(3.5rem, 12.6vw, 16.5rem);
+    font-weight: 400; /* cruza a fotografia: um peso acima */
+    text-align: right;
+  }
+
+  /* Celular: foto ao centro, uma linha sobre o topo e outra sobre a base */
+  @media (max-width: 39.999rem) {
+    .editorial {
+      padding-block: clamp(8rem, 34vw, 11rem);
+    }
+
+    .editorial__figure {
+      justify-self: center;
+      width: 68vw;
+      margin-right: 0;
+    }
+
+    .editorial__line--a {
+      top: -0.56em;
+      z-index: 3;
+      padding-left: 5vw;
+      font-size: 24vw;
+    }
+
+    .editorial__line--b {
+      bottom: -0.46em;
+      padding-right: 5vw;
+      font-size: 21vw;
+      text-align: right;
+    }
+  }
+</style>

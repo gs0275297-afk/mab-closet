@@ -1,0 +1,270 @@
+---
+/**
+ * SIGA A MAB — mosaico assimétrico que leva ao Instagram.
+ * Não é um feed ao vivo: é uma seleção editorial de imagens.
+ *
+ * TODO(MAB): para atualizar, troque os arquivos em src/assets/images/
+ * ou edite o array `tiles` abaixo.
+ */
+import type { ImageMetadata } from 'astro';
+import Media from './ui/Media.astro';
+import SectionLabel from './ui/SectionLabel.astro';
+import Arrow from './ui/Arrow.astro';
+import { site } from '../data/site';
+
+import listrado from '../assets/images/conjunto-listrado-frente.jpg';
+import renda from '../assets/images/detalhe-renda.jpg';
+import colar from '../assets/images/detalhe-colar.jpg';
+import tee from '../assets/images/tee-verao.jpg';
+import bolsa from '../assets/images/detalhe-bolsa.jpg';
+
+interface Tile {
+  src: ImageMetadata;
+  alt: string;
+  ratio: string;
+  position?: string;
+  sizes: string;
+  reveal: 'up' | 'down' | 'left' | 'right';
+  parallax: number;
+}
+
+const tiles: Tile[] = [
+  {
+    src: listrado,
+    alt: 'Conjunto listrado em rosa e off-white, com camisa e calça ampla',
+    ratio: '3 / 4',
+    position: '50% 30%',
+    sizes: '(min-width: 64rem) 30vw, 62vw',
+    reveal: 'up',
+    parallax: 1,
+  },
+  {
+    src: renda,
+    alt: 'Detalhe das barras de renda em blusas de cetim rosa, menta, off-white, marrom e preta',
+    ratio: '3 / 2',
+    sizes: '(min-width: 64rem) 38vw, 82vw',
+    reveal: 'left',
+    parallax: 0.6,
+  },
+  {
+    src: colar,
+    alt: 'Top branco tomara que caia com colar dourado de elos',
+    ratio: '5 / 6',
+    sizes: '(min-width: 64rem) 22vw, 34vw',
+    reveal: 'down',
+    parallax: 0.8,
+  },
+  {
+    src: tee,
+    alt: 'Camiseta branca amarrada na cintura com saia amarela',
+    ratio: '2 / 3',
+    position: '50% 20%',
+    sizes: '(min-width: 64rem) 22vw, 44vw',
+    reveal: 'up',
+    parallax: 1,
+  },
+  {
+    src: bolsa,
+    alt: 'Detalhe de calça de cetim amarelo-manteiga com bolsa preta de mão',
+    ratio: '1 / 1',
+    sizes: '(min-width: 64rem) 22vw, 44vw',
+    reveal: 'right',
+    parallax: 0.6,
+  },
+];
+---
+
+<section class="insta" id="instagram">
+  <div class="wrap">
+    <header class="insta__head">
+      <SectionLabel n="04" text="Instagram" />
+      <h2 class="insta__title display" data-reveal="lines">
+        <span class="line"><span>Siga</span></span>
+        <span class="line"><span><em class="accent">a MAB.</em></span></span>
+      </h2>
+    </header>
+
+    <ul class="mosaic">
+      {
+        tiles.map((tile, index) => (
+          <li class={`tile tile--${index + 1}`}>
+            <a href={site.instagram.url} target="_blank" rel="noopener" data-cursor="Instagram">
+              <Media
+                src={tile.src}
+                alt={tile.alt}
+                ratio={tile.ratio}
+                position={tile.position}
+                sizes={tile.sizes}
+                reveal={tile.reveal}
+                parallax={tile.parallax}
+              />
+              <span class="sr-only"> — abrir o Instagram da MAB Closet</span>
+            </a>
+          </li>
+        ))
+      }
+
+      <li class="mosaic__cta" data-reveal="fade">
+        <p class="body">Novidades, combinações e o dia a dia da MAB, em movimento.</p>
+        <a class="insta__handle display link link--on link--olive" href={site.instagram.url} target="_blank" rel="noopener">
+          {site.instagram.handle}
+          <Arrow />
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .insta {
+    padding-block: var(--section);
+  }
+
+  .insta__head {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+    margin-bottom: clamp(3.5rem, 7vw, 7rem);
+  }
+
+  .insta__head > :global(.section-label) {
+    grid-column: 1 / span 2;
+    align-self: start;
+    margin-top: 1.6rem;
+  }
+
+  .insta__title {
+    grid-column: 3 / -1;
+    font-size: clamp(4.6rem, 15.5vw, 19rem);
+    line-height: 0.8;
+    letter-spacing: -0.035em;
+  }
+
+  .insta__title .line:nth-child(2) {
+    margin-left: 0.95em;
+  }
+
+  /* ---------- Mosaico ---------- */
+
+  .mosaic {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+    row-gap: clamp(2.5rem, 5vw, 5.5rem);
+    align-items: start;
+  }
+
+  .tile a {
+    display: block;
+  }
+
+  .tile--1 {
+    grid-column: 1 / span 4;
+  }
+
+  .tile--2 {
+    grid-column: 5 / span 5;
+    margin-top: clamp(4rem, 11vw, 12rem);
+  }
+
+  .tile--3 {
+    grid-column: 10 / span 3;
+    margin-top: clamp(1rem, 2.5vw, 3rem);
+  }
+
+  .tile--4 {
+    grid-column: 6 / span 3;
+    grid-row: 2;
+    margin-top: clamp(-7rem, -5.6vw, -2rem);
+  }
+
+  .tile--5 {
+    grid-column: 2 / span 3;
+    grid-row: 2;
+    margin-top: clamp(1rem, 3vw, 3.5rem);
+  }
+
+  .mosaic__cta {
+    grid-column: 9 / -1;
+    grid-row: 2;
+    align-self: end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .insta__handle {
+    font-size: clamp(2.3rem, 4.5vw, 5.5rem);
+    font-style: italic;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .insta__handle :global(.arrow) {
+    width: 0.42em;
+    height: 0.42em;
+    margin-left: 0.3em;
+    vertical-align: 0.5em;
+  }
+
+  /* ---------- Tablet e celular ---------- */
+
+  @media (max-width: 63.999rem) {
+    .insta__head > :global(.section-label) {
+      grid-column: 1 / -1;
+      margin: 0 0 2.25rem;
+    }
+
+    .insta__title {
+      grid-column: 1 / -1;
+      font-size: clamp(4.75rem, 26vw, 13rem);
+    }
+
+    .mosaic {
+      column-gap: 0.875rem;
+      row-gap: 0.875rem;
+    }
+
+    .tile--1 {
+      grid-column: 1 / span 8;
+      grid-row: 1;
+    }
+
+    .tile--3 {
+      grid-column: 9 / span 4;
+      grid-row: 1;
+      margin-top: 46%;
+    }
+
+    .tile--2 {
+      grid-column: 2 / -1;
+      grid-row: 2;
+      margin-top: clamp(1.5rem, 6vw, 3rem);
+    }
+
+    .tile--5 {
+      grid-column: 1 / span 6;
+      grid-row: 3;
+      margin-top: clamp(4.5rem, 20vw, 8rem);
+    }
+
+    .tile--4 {
+      grid-column: 7 / span 6;
+      grid-row: 3;
+      margin-top: clamp(1.25rem, 5vw, 2.5rem);
+    }
+
+    .mosaic__cta {
+      grid-column: 1 / -1;
+      grid-row: 4;
+      margin-top: clamp(2.5rem, 9vw, 5rem);
+      padding-bottom: 0;
+    }
+
+    .insta__handle {
+      font-size: clamp(2.75rem, 12vw, 5rem);
+    }
+  }
+</style>

@@ -1,0 +1,217 @@
+---
+import Logo from './ui/Logo.astro';
+import Arrow from './ui/Arrow.astro';
+import { site, whatsapp, formatHour as clock } from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer on-dark">
+  <div class="wrap">
+    <div class="footer__grid">
+      <a class="footer__logo" href="#inicio" aria-label="MAB Closet — voltar ao início">
+        <Logo />
+      </a>
+
+      <nav class="footer__col" aria-label="Rodapé">
+        <h2 class="label">Navegar</h2>
+        <ul>
+          {
+            site.nav.map((item) => (
+              <li>
+                <a class="link" href={item.href}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div class="footer__col">
+        <h2 class="label">Contato</h2>
+        <ul>
+          <li>
+            <a class="link" href={whatsapp()} target="_blank" rel="noopener">WhatsApp<Arrow /></a>
+          </li>
+          <li>
+            <a class="link" href={site.instagram.url} target="_blank" rel="noopener">Instagram<Arrow /></a>
+          </li>
+          <li>
+            <a class="link" href={`tel:${site.phone.e164}`}>{site.phone.display}</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer__col">
+        <h2 class="label">Endereço</h2>
+        <address>
+          <a class="footer__address" href={site.mapsUrl} target="_blank" rel="noopener">
+            {site.address.street}<br />
+            {site.address.place}<br />
+            {site.address.city} — {site.address.state}
+          </a>
+        </address>
+      </div>
+
+      <div class="footer__col">
+        <h2 class="label">Horário</h2>
+        <ul>
+          {
+            site.hours.map((slot) => (
+              <li>
+                {slot.label}
+                <br />
+                <span class="footer__time">
+                  {clock(slot.open)} — {clock(slot.close)}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__base">
+      <p>© {year} {site.name}</p>
+      <p>Moda feminina <span aria-hidden="true">·</span> {site.address.city} — {site.address.state}</p>
+      <a class="link" href="#inicio">Voltar ao topo <span aria-hidden="true">↑</span></a>
+    </div>
+  </div>
+
+  <div class="footer__mark" aria-hidden="true" data-reveal="lines">
+    <span class="line"><span>MAB</span></span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    overflow: hidden;
+    overflow: clip;
+    background: var(--ink);
+    color: var(--bone);
+  }
+
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.5fr repeat(4, minmax(0, 1fr));
+    gap: 3rem clamp(1.5rem, 3vw, 3.5rem);
+    padding-block: clamp(3.5rem, 6vw, 6rem) clamp(3rem, 5vw, 5rem);
+  }
+
+  .footer__logo :global(.logo) {
+    font-size: 2.1rem;
+  }
+
+  .footer__logo {
+    justify-self: start;
+    align-self: start;
+    display: inline-flex;
+  }
+
+  .footer__col {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: rgb(243 240 232 / 0.86);
+  }
+
+  .footer__col h2 {
+    margin-bottom: 1.4rem;
+    color: var(--bone);
+    opacity: 0.55;
+  }
+
+  .footer__col ul {
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .footer__col ul:not(:has(a)) {
+    gap: 0.9rem;
+  }
+
+  .footer__address {
+    display: inline-block;
+    transition: opacity 0.4s var(--ease);
+  }
+
+  .footer__address:hover {
+    opacity: 0.65;
+  }
+
+  .footer__time {
+    opacity: 0.65;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    padding-block: 1.25rem;
+    border-top: 1px solid var(--line-light);
+    font-size: 0.8125rem;
+    color: rgb(243 240 232 / 0.62);
+  }
+
+  .footer__base a {
+    color: var(--bone);
+  }
+
+  /* Assinatura gigante, tom sobre tom — fecha a página.
+     Mesma sans compacta de "MAB" na assinatura; cortada na base. */
+  .footer__mark {
+    margin-top: clamp(1rem, 2.5vw, 2.5rem);
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 45vw;
+    line-height: 0.74;
+    letter-spacing: -0.055em;
+    text-align: center;
+    color: var(--olive);
+    user-select: none;
+  }
+
+  .footer__mark .line {
+    padding: 0.02em 0 0;
+    margin: 0;
+    height: 0.56em;
+  }
+
+  .footer__mark .line > span {
+    position: relative;
+    left: -0.04em; /* compensa o recuo natural do "M" */
+    margin-right: -0.055em;
+  }
+
+  @media (max-width: 63.999rem) {
+    .footer__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .footer__logo {
+      grid-column: 1 / -1;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  @media (max-width: 39.999rem) {
+    .footer__base {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.35rem;
+      padding-block: 1.5rem;
+    }
+
+    .footer__base a {
+      margin-top: 0.5rem;
+      padding-block: 0.7em;
+    }
+
+    .footer__col a.link {
+      padding-block: 0.55em;
+    }
+  }
+</style>

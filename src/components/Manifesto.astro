@@ -1,0 +1,159 @@
+---
+/**
+ * MANIFESTO — a essência da marca em uma frase.
+ * As palavras ganham tinta conforme a leitura avança com a rolagem
+ * ([data-scrub], em main.ts).
+ */
+import Media from './ui/Media.astro';
+import SectionLabel from './ui/SectionLabel.astro';
+import arara from '../assets/images/arara-halters.jpg';
+
+// Frase-manifesto. A palavra em `emphasis` aparece em itálico.
+const statement = 'Peças escolhidas uma a uma, para mulheres que fazem do estilo a sua assinatura.';
+const emphasis = 'assinatura.';
+const words = statement.split(' ');
+---
+
+<section class="manifesto" id="marca">
+  <div class="wrap manifesto__grid">
+    <SectionLabel class="manifesto__label" n="01" text="A marca" />
+
+    <h2 class="manifesto__statement display" data-scrub>
+      {
+        words.map((word, index) => (
+          <Fragment>
+            <span class="w">{word === emphasis ? <em class="accent">{word}</em> : word}</span>
+            {index < words.length - 1 ? ' ' : ''}
+          </Fragment>
+        ))
+      }
+    </h2>
+
+    <figure class="manifesto__figure">
+      <Media
+        src={arara}
+        alt="Cinco blusas frente única de cetim com barra de renda, em rosa, menta, off-white, marrom e preto, penduradas em uma arara dourada"
+        sizes="(min-width: 64rem) 32vw, (min-width: 40rem) 54vw, 78vw"
+        ratio="4 / 5"
+        position="50% 60%"
+        reveal="up"
+      />
+      <figcaption class="label">Cetim e renda <span aria-hidden="true">—</span> cinco tons</figcaption>
+    </figure>
+
+    <div class="manifesto__aside">
+      <p class="body" data-reveal="fade">
+        A MAB Closet é uma loja multimarcas de moda feminina em Três Lagoas. Uma seleção contemporânea, feita com
+        olhar, critério e tempo.
+      </p>
+      <a class="label link link--on link--olive" href="#colecoes" data-reveal="fade" style="--d:.12s">
+        Conhecer a curadoria
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .manifesto {
+    padding-block: var(--section) calc(var(--section) * 0.9);
+  }
+
+  .manifesto__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+  }
+
+  .manifesto__grid > :global(.manifesto__label) {
+    grid-column: 1 / span 2;
+    align-self: start;
+    margin-top: 1.35rem;
+  }
+
+  .manifesto__statement {
+    grid-column: 3 / -1;
+    font-size: clamp(2.4rem, 6.2vw, 7.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.022em;
+    text-wrap: balance;
+  }
+
+  .manifesto__statement .w {
+    display: inline-block;
+    will-change: opacity;
+  }
+
+  .manifesto__statement em {
+    padding-right: 0.06em;
+  }
+
+  .manifesto__figure {
+    grid-column: 3 / span 4;
+    margin-top: clamp(4rem, 9vw, 9rem);
+  }
+
+  .manifesto__figure figcaption {
+    margin-top: 1.1rem;
+    color: var(--stone);
+  }
+
+  .manifesto__aside {
+    grid-column: 8 / span 4;
+    align-self: end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2rem;
+    padding-bottom: 2.6rem;
+  }
+
+  .manifesto__aside .body {
+    font-size: clamp(1.0625rem, 1.2vw, 1.25rem);
+    line-height: 1.65;
+    max-width: 31ch;
+    color: var(--ink);
+  }
+
+  @media (max-width: 63.999rem) {
+    .manifesto__grid > :global(.manifesto__label) {
+      grid-column: 1 / -1;
+      margin: 0 0 2.5rem;
+    }
+
+    .manifesto__statement {
+      grid-column: 1 / -1;
+    }
+
+    .manifesto__figure {
+      grid-column: 1 / span 7;
+    }
+
+    .manifesto__aside {
+      grid-column: 9 / -1;
+      padding-bottom: 2.6rem;
+    }
+  }
+
+  @media (max-width: 39.999rem) {
+    .manifesto__statement {
+      font-size: clamp(2.35rem, 10.8vw, 3.6rem);
+      font-weight: 400;
+      line-height: 1.04;
+    }
+
+    .manifesto__statement em {
+      font-weight: 400;
+    }
+
+    .manifesto__figure {
+      grid-column: 1 / span 10;
+      margin-top: 4.5rem;
+    }
+
+    .manifesto__aside {
+      grid-column: 3 / -1;
+      margin-top: 3.5rem;
+      padding-bottom: 0;
+    }
+  }
+</style>
